@@ -1,9 +1,10 @@
-package com.jzel.ollamadebatepoc;
+package com.jzel.ollamadebatepoc.service;
 
 import static java.net.URLEncoder.encode;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.stream.IntStream.range;
 
+import com.jzel.ollamadebatepoc.adapter.model.DebateResponse;
 import jakarta.annotation.PostConstruct;
 import java.security.SecureRandom;
 import java.util.ArrayList;
@@ -17,7 +18,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-class DebateService {
+public class DebateService {
 
   private static final SecureRandom RANDOM = new SecureRandom();
 
@@ -35,7 +36,7 @@ class DebateService {
     );
   }
 
-  List<DebateResponse> conductDebate(final String input, final int exchanges) {
+  public List<DebateResponse> conductDebate(final String input, final int exchanges) {
     final String urlEncodedInput = encode(input, UTF_8);
     final List<DebateResponse> debateTranscript = new ArrayList<>();
     final boolean conservativeStarts = RANDOM.nextBoolean();

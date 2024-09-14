@@ -1,4 +1,4 @@
-package com.jzel.ollamadebatepoc;
+package com.jzel.ollamadebatepoc.config;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 

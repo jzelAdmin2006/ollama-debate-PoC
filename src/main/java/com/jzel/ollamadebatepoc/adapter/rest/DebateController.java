@@ -1,5 +1,7 @@
-package com.jzel.ollamadebatepoc;
+package com.jzel.ollamadebatepoc.adapter.rest;
 
+import com.jzel.ollamadebatepoc.adapter.model.DebateResponse;
+import com.jzel.ollamadebatepoc.service.DebateService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

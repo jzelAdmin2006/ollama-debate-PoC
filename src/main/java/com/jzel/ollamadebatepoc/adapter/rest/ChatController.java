@@ -1,5 +1,6 @@
-package com.jzel.ollamadebatepoc;
+package com.jzel.ollamadebatepoc.adapter.rest;
 
+import com.jzel.ollamadebatepoc.service.ChatService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.web.bind.annotation.PostMapping;

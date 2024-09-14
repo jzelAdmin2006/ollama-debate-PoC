@@ -1,4 +1,4 @@
-package com.jzel.ollamadebatepoc;
+package com.jzel.ollamadebatepoc.config;
 
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.ChatClient.Builder;
