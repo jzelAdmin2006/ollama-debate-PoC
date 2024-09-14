@@ -13,7 +13,7 @@ public class DebateController {
   private final DebateService debateService;
 
   @PostMapping("/debate/{exchanges}")
-  public String startDebate(@RequestBody final String input, @PathVariable int exchanges) {
+  public String debate(@RequestBody final String input, @PathVariable final int exchanges) {
     return debateService.conductDebate(input, exchanges);
   }
 }
