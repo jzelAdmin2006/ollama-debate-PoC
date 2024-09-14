@@ -1,5 +1,7 @@
 package com.jzel.ollamadebatepoc;
 
+import static java.net.URLEncoder.encode;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.stream.IntStream.range;
 
 import jakarta.annotation.PostConstruct;
@@ -33,16 +35,18 @@ class DebateService {
     );
   }
 
-  List<DebateResponse> conductDebate(String input, int exchanges) {
+  List<DebateResponse> conductDebate(final String input, final int exchanges) {
+    final String urlEncodedInput = encode(input, UTF_8);
     final List<DebateResponse> debateTranscript = new ArrayList<>();
     final boolean conservativeStarts = RANDOM.nextBoolean();
     final ChatClient firstClient = conservativeStarts ? conservativeChatClient : liberalChatClient;
     final ChatClient secondClient = conservativeStarts ? liberalChatClient : conservativeChatClient;
     final AtomicReference<String> firstResponse = new AtomicReference<>(answer(firstClient, debateTranscript::add,
-        STR."You have been selected to start debating regarding the prompt \"\{input}\".."
+        STR."You have been selected to start debating regarding the URL-encoded prompt \"\{urlEncodedInput}\"."
     ));
     final AtomicReference<String> secondResponse = new AtomicReference<>(answer(secondClient, debateTranscript::add,
-        STR."Your opponent was given the prompt \"\{input}\". Their answer was \"\{firstResponse}\"."
+        STR."Your opponent was given the URL-encoded prompt \"\{urlEncodedInput}\". Their URL-encoded answer was \"\{
+            encode(firstResponse.get(), UTF_8)}\"."
     ));
     range(1, exchanges).forEach(_ -> {
       firstResponse.set(react(firstClient, secondResponse.get(), debateTranscript::add));
@@ -59,7 +63,7 @@ class DebateService {
     return answer(
         client,
         transcriptEntryConsumer,
-        STR."Your opponent has provided the reaction \"\{otherResponse}\" to your arguments."
+        STR."Your opponent has provided the URL-encoded reaction \"\{encode(otherResponse, UTF_8)}\" to your arguments."
     );
   }
 
