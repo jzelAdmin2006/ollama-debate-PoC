@@ -1,10 +1,10 @@
-package com.jzel.llamadebatepoc;
+package com.jzel.ollamadebatepoc;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class LlamaDebatePoCApplicationTests {
+class OllamaDebatePoCApplicationTests {
 
   @Test
   void contextLoads() {

@@ -1,4 +1,4 @@
-package com.jzel.llamadebatepoc;
+package com.jzel.ollamadebatepoc;
 
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.model.ChatResponse;

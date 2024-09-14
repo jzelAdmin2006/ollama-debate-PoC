@@ -1,4 +1,4 @@
-package com.jzel.llamadebatepoc;
+package com.jzel.ollamadebatepoc;
 
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 class ChatController {
 
-  private final ChatService chatService;
+  private final com.jzel.ollamadebatepoc.ChatService chatService;
 
-  ChatController(ChatService chatService) {
+  ChatController(com.jzel.ollamadebatepoc.ChatService chatService) {
     this.chatService = chatService;
   }
 
