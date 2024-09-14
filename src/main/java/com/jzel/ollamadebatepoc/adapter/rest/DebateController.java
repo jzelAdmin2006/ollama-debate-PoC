@@ -2,6 +2,7 @@ package com.jzel.ollamadebatepoc.adapter.rest;
 
 import com.jzel.ollamadebatepoc.adapter.model.DebateResponse;
 import com.jzel.ollamadebatepoc.service.DebateService;
+import jakarta.validation.constraints.Min;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +19,7 @@ class DebateController {
 
   @PostMapping("/debate/{exchanges}")
   ResponseEntity<List<DebateResponse>> debate(@RequestBody final String input,
-      @PathVariable final int exchanges) {
+      @PathVariable @Min(1) final int exchanges) {
     return ResponseEntity.ok(debateService.conductDebate(input, exchanges));
   }
 }
