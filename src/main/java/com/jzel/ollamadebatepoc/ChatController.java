@@ -1,31 +1,29 @@
 package com.jzel.ollamadebatepoc;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequiredArgsConstructor
 class ChatController {
 
-  private final com.jzel.ollamadebatepoc.ChatService chatService;
-
-  ChatController(com.jzel.ollamadebatepoc.ChatService chatService) {
-    this.chatService = chatService;
-  }
+  private final ChatService chatService;
 
   @PostMapping("/chat/simple")
-  String chatWithText(@RequestBody String question) {
+  String chatWithText(@RequestBody final String question) {
     return chatService.chatWithText(question);
   }
 
   @PostMapping("/chat/prompt")
-  String chatWithPrompt(@RequestBody String question) {
+  String chatWithPrompt(@RequestBody final String question) {
     return chatService.chatWithPrompt(question).getResult().getOutput().getContent();
   }
 
   @PostMapping("/chat/full")
-  ChatResponse chatWithPromptAndFullResponse(@RequestBody String question) {
+  ChatResponse chatWithPromptAndFullResponse(@RequestBody final String question) {
     return chatService.chatWithPrompt(question);
   }
 
