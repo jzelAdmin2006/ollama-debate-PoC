@@ -8,10 +8,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class ChatConfig {
+class ChatConfig {
 
-  public static final String CONSERVATIVE = "conservative";
-  public static final String LIBERAL = "liberal";
+  private static final String CONSERVATIVE = "conservative";
+  private static final String LIBERAL = "liberal";
 
   @Bean
   ChatClient conservativeChatClient(final Builder builder) {
