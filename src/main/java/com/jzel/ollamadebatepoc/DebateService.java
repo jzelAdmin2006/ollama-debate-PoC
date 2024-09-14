@@ -20,12 +20,12 @@ class DebateService {
 
     for (int i = 0; i < exchanges; i++) {
       String conservativeResponse = chatService.chat(conservativeChatClient, currentInput);
-      debateTranscript.add(new DebateResponse("Conservative", conservativeResponse));
+      debateTranscript.add(new DebateResponse("conservative", conservativeResponse));
 
       currentInput = conservativeResponse;
 
       String liberalResponse = chatService.chat(liberalChatClient, currentInput);
-      debateTranscript.add(new DebateResponse("Liberal", liberalResponse));
+      debateTranscript.add(new DebateResponse("liberal", liberalResponse));
 
       currentInput = liberalResponse;
     }
