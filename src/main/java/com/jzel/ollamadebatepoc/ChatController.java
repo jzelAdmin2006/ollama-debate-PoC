@@ -1,6 +1,7 @@
 package com.jzel.ollamadebatepoc;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -10,9 +11,16 @@ import org.springframework.web.bind.annotation.RestController;
 class ChatController {
 
   private final ChatService chatService;
+  private final ChatClient conservativeChatClient;
+  private final ChatClient liberalChatClient;
 
-  @PostMapping("/chat/simple")
-  String chatWithText(@RequestBody final String question) {
-    return chatService.chatWithText(question);
+  @PostMapping("/chat/conservative")
+  String chatWithConservative(@RequestBody final String input) {
+    return chatService.chat(conservativeChatClient, input);
+  }
+
+  @PostMapping("/chat/liberal")
+  String chatWithLiberal(@RequestBody final String input) {
+    return chatService.chat(liberalChatClient, input);
   }
 }
