@@ -30,6 +30,7 @@ public class DebateService {
   private final ChatService chatService;
   private final ChatClient conservativeChatClient;
   private final ChatClient liberalChatClient;
+  private final PartyPlatformRagService ragService;
 
   private Map<ChatClient, String> debaterNames;
 
@@ -47,17 +48,19 @@ public class DebateService {
     final boolean conservativeStarts = RANDOM.nextBoolean();
     final ChatClient firstClient = conservativeStarts ? conservativeChatClient : liberalChatClient;
     final ChatClient secondClient = conservativeStarts ? liberalChatClient : conservativeChatClient;
+    final String firstClientRagArguments = ragService.rag(firstClient, input);
     final AtomicReference<String> firstResponse = new AtomicReference<>(answer(firstClient, debateTranscript::add,
         STR."You have been selected to start debating regarding the URL-encoded prompt \"\{urlEncodedInput}\". \{desiredResponseLanguage(
-            input)}"
+            input)}", firstClientRagArguments
     ));
+    final String secondClientRagArguments = ragService.rag(firstClient, input);
     final AtomicReference<String> secondResponse = new AtomicReference<>(answer(secondClient, debateTranscript::add,
         STR."Your opponent was given the URL-encoded prompt \"\{urlEncodedInput}\". Their URL-encoded answer was \"\{
-            encode(firstResponse.get(), UTF_8)}\". \{desiredResponseLanguage(input)}"
+            encode(firstResponse.get(), UTF_8)}\". \{desiredResponseLanguage(input)}", secondClientRagArguments
     ));
     range(1, exchanges).forEach(_ -> {
-      firstResponse.set(react(firstClient, secondResponse.get(), debateTranscript::add));
-      secondResponse.set(react(secondClient, firstResponse.get(), debateTranscript::add));
+      firstResponse.set(react(firstClient, secondResponse.get(), debateTranscript::add, firstClientRagArguments));
+      secondResponse.set(react(secondClient, firstResponse.get(), debateTranscript::add, secondClientRagArguments));
     });
     return debateTranscript;
   }
@@ -65,22 +68,24 @@ public class DebateService {
   private String react(
       final ChatClient client,
       final String otherResponse,
-      final Consumer<DebateResponse> transcriptEntryConsumer
-  ) {
+      final Consumer<DebateResponse> transcriptEntryConsumer,
+      String ragArguments) {
     return answer(
         client,
         transcriptEntryConsumer,
         STR."Your opponent has provided the URL-encoded reaction \"\{encode(otherResponse,
-            UTF_8)}\" to your arguments. \{desiredResponseLanguage(otherResponse)}"
+            UTF_8)}\" to your arguments. \{desiredResponseLanguage(otherResponse)}",
+        ragArguments
     );
   }
 
   private String answer(
       final ChatClient client,
       final Consumer<DebateResponse> transcriptEntryConsumer,
-      final String message
+      final String message,
+      final String ragArguments
   ) {
-    final String response = chatService.chat(client, message);
+    final String response = chatService.chat(client, message, ragArguments);
     appendResponse(transcriptEntryConsumer, client, response);
     return response;
   }
