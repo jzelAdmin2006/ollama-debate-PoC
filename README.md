@@ -1,4 +1,4 @@
-Ollama Debate PoC
+Ollama Debate Tool PoC
 
 This is a demo for my in-depth general education work, which I will complete in 2024. It is a tool that makes a democratic and a republican AI debate each other.
 
