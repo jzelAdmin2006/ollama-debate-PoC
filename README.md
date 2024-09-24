@@ -9,4 +9,4 @@ I've also created a [simple frontend](https://github.com/jzelAdmin2006/ollama-de
 ## Architecture
 
 ![Architecture](./architecture.drawio.svg)
-<img src="./architecture.drawio.svg">
+<img src="./architecture.drawio.svg?raw=true&sanitize=true">
