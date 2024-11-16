@@ -15,7 +15,7 @@ class DebateController {
   private final SimpMessagingTemplate messagingTemplate;
 
   @MessageMapping("/debate")
-  public void handleDebate(DebateRequest request) {
+  public void handleDebate(final DebateRequest request) {
     messagingTemplate.convertAndSend("/topic/debate/" + request.sessionId(),
         debateService.conductDebate(request.input(), request.exchanges())
     );
