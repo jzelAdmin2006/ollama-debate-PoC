@@ -1,5 +1,8 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="OllamaDebatePoCApplicationLocal" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+    <envs>
+      <env name="DIRECT_CHAT_DEMO_ENABLED" value="true" />
+    </envs>
     <option name="FRAME_DEACTIVATION_UPDATE_POLICY" value="UpdateClassesAndResources" />
     <module name="ollama-debate-PoC.main" />
     <option name="SPRING_BOOT_MAIN_CLASS" value="com.jzel.ollamadebatepoc.OllamaDebatePoCApplication" />
