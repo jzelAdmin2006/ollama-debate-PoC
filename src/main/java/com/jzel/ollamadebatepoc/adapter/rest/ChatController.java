@@ -4,14 +4,14 @@ import com.jzel.ollamadebatepoc.service.ChatService;
 import com.jzel.ollamadebatepoc.service.PartyPlatformRagService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.ai.chat.client.ChatClient;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@ConditionalOnProperty(name = "ollama.debate.poc.directchat.enabled", havingValue = "true")
+@ConditionalOnExpression("${ollama.debate.poc.directchat.enabled}")
 class ChatController {
 
   private final ChatService chatService;
