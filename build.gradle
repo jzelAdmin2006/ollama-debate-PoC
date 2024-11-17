@@ -43,3 +43,9 @@ dependencyManagement {
 tasks.withType(JavaCompile).configureEach {
     options.compilerArgs += '--enable-preview'
 }
+
+bootRun {
+    jvmArgs = [
+            '--enable-preview'
+    ]
+}
