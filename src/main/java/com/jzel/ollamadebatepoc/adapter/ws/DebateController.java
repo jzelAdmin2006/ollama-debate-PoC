@@ -17,8 +17,12 @@ class DebateController {
 
   @MessageMapping("/debate")
   public void handleDebate(final @Valid DebateRequest request) {
-    messagingTemplate.convertAndSend("/topic/debate/" + request.sessionId(),
-        debateService.conductDebate(request.input(), request.exchanges())
-    );
+    debateService.conductDebate(request.input(), request.exchanges())
+        .thenAccept(
+            debateResponses -> messagingTemplate.convertAndSend(
+                STR."/topic/debate/\{request.sessionId()}",
+                debateResponses
+            )
+        );
   }
 }

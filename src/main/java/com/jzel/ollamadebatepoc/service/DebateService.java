@@ -5,6 +5,7 @@ import static com.github.pemistahl.lingua.api.Language.GERMAN;
 import static com.github.pemistahl.lingua.api.LanguageDetectorBuilder.fromLanguages;
 import static java.net.URLEncoder.encode;
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static java.util.stream.IntStream.range;
 
 import com.github.pemistahl.lingua.api.LanguageDetector;
@@ -14,10 +15,12 @@ import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -42,27 +45,30 @@ public class DebateService {
     );
   }
 
-  public List<DebateResponse> conductDebate(final String input, final int exchanges) {
-    final String urlEncodedInput = encode(input, UTF_8);
-    final List<DebateResponse> debateTranscript = new ArrayList<>();
-    final boolean conservativeStarts = RANDOM.nextBoolean();
-    final ChatClient firstClient = conservativeStarts ? conservativeChatClient : liberalChatClient;
-    final ChatClient secondClient = conservativeStarts ? liberalChatClient : conservativeChatClient;
-    final String firstClientRagArguments = ragService.rag(firstClient, input);
-    final AtomicReference<String> firstResponse = new AtomicReference<>(answer(firstClient, debateTranscript::add,
-        STR."You have been selected to start debating regarding the URL-encoded prompt \"\{urlEncodedInput}\". \{desiredResponseLanguage(
-            input)}", firstClientRagArguments
-    ));
-    final String secondClientRagArguments = ragService.rag(firstClient, input);
-    final AtomicReference<String> secondResponse = new AtomicReference<>(answer(secondClient, debateTranscript::add,
-        STR."Your opponent was given the URL-encoded prompt \"\{urlEncodedInput}\". Their URL-encoded answer was \"\{
-            encode(firstResponse.get(), UTF_8)}\". \{desiredResponseLanguage(input)}", secondClientRagArguments
-    ));
-    range(1, exchanges).forEach(_ -> {
-      firstResponse.set(react(firstClient, secondResponse.get(), debateTranscript::add, firstClientRagArguments));
-      secondResponse.set(react(secondClient, firstResponse.get(), debateTranscript::add, secondClientRagArguments));
+  @Async("taskExecutor")
+  public CompletableFuture<List<DebateResponse>> conductDebate(final String input, final int exchanges) {
+    return supplyAsync(() -> {
+      final String urlEncodedInput = encode(input, UTF_8);
+      final List<DebateResponse> debateTranscript = new ArrayList<>();
+      final boolean conservativeStarts = RANDOM.nextBoolean();
+      final ChatClient firstClient = conservativeStarts ? conservativeChatClient : liberalChatClient;
+      final ChatClient secondClient = conservativeStarts ? liberalChatClient : conservativeChatClient;
+      final String firstClientRagArguments = ragService.rag(firstClient, input);
+      final AtomicReference<String> firstResponse = new AtomicReference<>(answer(firstClient, debateTranscript::add,
+          STR."You have been selected to start debating regarding the URL-encoded prompt \"\{urlEncodedInput}\". \{desiredResponseLanguage(
+              input)}", firstClientRagArguments
+      ));
+      final String secondClientRagArguments = ragService.rag(firstClient, input);
+      final AtomicReference<String> secondResponse = new AtomicReference<>(answer(secondClient, debateTranscript::add,
+          STR."Your opponent was given the URL-encoded prompt \"\{urlEncodedInput}\". Their URL-encoded answer was \"\{
+              encode(firstResponse.get(), UTF_8)}\". \{desiredResponseLanguage(input)}", secondClientRagArguments
+      ));
+      range(1, exchanges).forEach(_ -> {
+        firstResponse.set(react(firstClient, secondResponse.get(), debateTranscript::add, firstClientRagArguments));
+        secondResponse.set(react(secondClient, firstResponse.get(), debateTranscript::add, secondClientRagArguments));
+      });
+      return debateTranscript;
     });
-    return debateTranscript;
   }
 
   private String react(
